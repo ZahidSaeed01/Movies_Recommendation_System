@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='css/stylesheet.css')}}"
+    />
+    <title>Movie Recommendation System</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1 class="display-3 text-center py-2">Movie Recommender System</h1>
+        <hr />
+        <div class="movie">
+          <div class="row">
+            <div class="col-md-4 offset-md-1 ">
+              <img
+                src="{{current_movie['full-size cover url']}}"
+                class="rounded w-100"
+                width="300px"
+                height="350px"
+              />
+            </div>
+            <div class="col-md-6">
+              <h4 class="h2 mb-3">
+                <strong>{{current_movie['title']}}</strong>
+              </h4>
+              <h5 class="h4 mb-2">{{current_movie['year']}}</h5>
+              <h5 class="h4 mb-2">{{current_movie['genres']}}</h5>
+              <h5 class="h4">IDMb Ratings : {{current_movie['rating']}}</h5>
+            </div>
+
+            <div class="col-md-10 offset-md-1 mt-5">
+              <h5 class="h3">Description</h5>
+              <p>
+                {{current_movie['plot outline']}}
+              </p>
+            </div>
+          </div>
+
+          <section class="recommendations mt-5 py-5">
+            <h3 class="h3">Recommendations</h3>
+            <hr />
+            <div class="row">
+              {% for movie in recommended_movies %}
+
+              <div class="col-md-4">
+                <div class="card">
+                  <img
+                    class="card-img-top"
+                    src="{{movie['full-size cover url']}}"
+                    alt="Card image cap"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">{{movie['title']}}</h5>
+                    <p class="card-text">
+                      {{movie['plot outline'][:200]}}
+                    </p>
+                    <a
+                      href="{{'http://localhost:5000/?movie={}'.format(movie.movieID)}}"
+                      class="btn btn-primary btn-block"
+                      >Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script src="{{url_for('static',filename='js/main.js')}}"></script>
+  </body>
+</html>
