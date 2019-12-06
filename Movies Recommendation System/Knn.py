@@ -65,6 +65,28 @@ class KNN:
         self.processedData['movieId'] = self.filter_movies.keys()
                 
     
+    def set_tags(self):
+        
+        unique_tags = set()
+        for item in self.tags['tag']:
+            unique_tags.add(item.lower())
+        unique_tags = list(unique_tags)
+        
+        self.processedData['movieId'] = self.filter_movies.keys()
+        
+        for tag in unique_tags:
+            self.processedData['tag_' +tag ] = [0] * len(self.filter_movies) 
+        
+        for index,movie in self.processedData.iterrows():
+            movieId = movie['movieId']
+            tags = self.tags[self.tags['movieId'] == movieId]
+            if not tags.empty:
+                for tag in tags['tag']:
+                    self.processedData['tag_' + tag.lower()][index] = 1
+
+    
+
+    
     def calculate_euclidean_distance(self,point1,point2):
         independent_vars = point1.shape[0]
         sum_of_distances =  0
@@ -74,7 +96,7 @@ class KNN:
         
         return math.sqrt(sum_of_distances)
     
-    def recommend_movies(self,imdb_movieId,neighbours=4):
+    def recommend_movies(self,imdb_movieId,neighbours=7):
         
         movieId = self.links[self.links['imdbId'] == imdb_movieId]['movieId'].values[0]
         movie = self.processedData[self.processedData['movieId'] == movieId].iloc[:,1:].values[0]
@@ -87,7 +109,10 @@ class KNN:
             
             if distance != 0:
                 all_distances.append((distance,i))
-                
+        
+        
+        print(sorted(all_distances)[0:neighbours])
+        
         movie_ids = []
         
         for distance,index in sorted(all_distances)[:neighbours]:
@@ -96,5 +121,6 @@ class KNN:
         imdb_ids = self.links[self.links['movieId'].isin(movie_ids)]['imdbId'].values
         
         test = self.movies[self.movies['movieId'].isin(movie_ids)]
-
+        print(test)
+            
         return (imdb_ids)
